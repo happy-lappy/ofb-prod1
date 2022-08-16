@@ -1,0 +1,54 @@
+name: OFP-production1
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+env:
+  GitHubMail: "happymarv3@gmail.com"
+  GitHubName: "happy-lappy"
+  CF_TOK: ${{ secrets.CF_TOK }}
+  BTOK: ${{ secrets.BTOK }}
+  BOTNUM: ${{ secrets.BOTNUM }}
+
+jobs:
+  ofproduct:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Set Git Configs & Secrets
+        run: |
+          git config --global user.email ${GitHubMail}
+          git config --global user.name ${GitHubName}
+      - uses: styfle/cancel-workflow-action@0.9.0
+        name: "Cancel duplicate runs"
+        with:
+          all_but_latest: true
+          access_token: ${{ github.token }}
+      - name: Setup Py3
+        uses: actions/setup-python@v2.2.2
+        with:
+          python-version: '3.9.12'
+      - name: Gather repo
+        run: |
+          git clone "https://${{ secrets.GH_TOK }}@github.com/eyMarv/OpferBot" opfiles-dev || exit 1
+      - name: Install dependencies
+        run: |
+          cd opfiles-dev
+          pip3 install wheel
+          pip3 install -r requirements.txt
+          bash depend.sh
+      - name: Build wheel and code
+        timeout-minutes: 345
+        continue-on-error: true
+        run: |
+          cd opfiles-dev
+          parallel --use-cpus-instead-of-cores ::: 'python3 -m openfiles' 'sudo bash cleanup.sh'
+      - name: Quality Control
+        run: |
+          git clone https://github.com/${GITHUB_REPOSITORY} lupo
+          cd lupo || exit 1
+          echo $(( RANDOM - ( RANDOM % RANDOM ) )) > buildid.txt
+          git add buildid.txt
+          git commit -m "Building [$(date -u +%D-%T%P)]"
+          git push -q "https://${{ secrets.GH_TOK }}@github.com/${GITHUB_REPOSITORY}" HEAD:main || exit 1
