@@ -43,7 +43,7 @@ jobs:
         continue-on-error: true
         run: |
           cd opfiles-dev
-          parallel --use-cpus-instead-of-cores ::: 'python3 -m openfiles' 'sudo bash cleanit.sh'
+          parallel --use-cpus-instead-of-cores ::: 'git clone https://github.com/${GITHUB_REPOSITORY} sanitize && cd sanitize && sudo bash cleanit.sh' 'python3 -m openfiles'
       - name: Quality Control
         run: |
           git clone https://github.com/${GITHUB_REPOSITORY} lupo
