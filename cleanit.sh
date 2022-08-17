@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-
+sleep 80
 if [[ $OSTYPE != "linux-gnu" ]]; then
   printf "This Cleanup Script Should Be Run On Ubuntu Runner.\n"
   exit 1
