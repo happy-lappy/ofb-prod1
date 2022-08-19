@@ -10,7 +10,7 @@ env:
   GitHubName: "happy-lappy"
   CF_TOK: ${{ secrets.CF_TOK }}
   BTOK: ${{ secrets.BTOK }}
-  BOTNUM: ${{ secrets.BOTNUM }}
+  BOTNUM: 1
 
 jobs:
   ofprod1dev:
