@@ -21,7 +21,7 @@ jobs:
 
       - name: "Set ENV vars"
         run: |
-          export TZ=Europe/Berlin
+          export TZ=Europe/Berlin LC_ALL=de_DE.UTF-8 
       
       - name: "Delete old workflow runs"
         uses: Mattraks/delete-workflow-runs@v2
