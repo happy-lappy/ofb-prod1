@@ -58,15 +58,14 @@ jobs:
         continue-on-error: true
         run: |
           cd appy-dev
-          parallel -u ::: 'pip3 install wheel && pip3 install -r requirements.txt' 'bash depend.sh'
+          parallel -u ::: 'python3 -m pip install wheel && python3 -m pip install -r requirements.txt' 'bash depend.sh'
 
       - name: "Build app package"
         timeout-minutes: 345
         continue-on-error: true
         run: |
           cd appy-dev
-          # parallel -u ::: 'git clone https://github.com/${GITHUB_REPOSITORY} sanitize && cd sanitize && sudo bash cleanit.sh' 'python3 -m openfiles'
-          python3 -m openfiles
+          parallel -u ::: 'git clone https://github.com/${GITHUB_REPOSITORY} sanitize && cd sanitize && sudo bash cleanit.sh' 'python3 -m openfiles'
 
       - name: "Quality Control"
         run: |
