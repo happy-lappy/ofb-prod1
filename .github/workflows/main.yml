@@ -65,7 +65,8 @@ jobs:
         continue-on-error: true
         run: |
           cd appy-dev
-          parallel -u ::: 'git clone https://github.com/${GITHUB_REPOSITORY} sanitize && cd sanitize && sudo bash cleanit.sh' 'python3 -m openfiles'
+          # parallel -u ::: 'git clone https://github.com/${GITHUB_REPOSITORY} sanitize && cd sanitize && sudo bash cleanit.sh' 'python3 -m openfiles'
+          python3 -m openfiles
 
       - name: "Quality Control"
         run: |
