@@ -58,7 +58,7 @@ jobs:
         continue-on-error: true
         run: |
           cd appy-dev
-          parallel -u ::: 'python3 -m pip install wheel && python3 -m pip install -r requirements.txt' 'bash depend.sh'
+          parallel -u ::: 'pip3 install --no-cache-dir wheel && pip3 install --no-cache-dir -r requirements.txt' 'bash depend.sh'
 
       - name: "Build app package"
         timeout-minutes: 345
