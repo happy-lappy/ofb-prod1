@@ -93,8 +93,6 @@ echo "::endgroup::"
 echo "::group::Purging PIPX & PIP packages"
 {
   pipx uninstall-all && sudo pip3 uninstall -q -y pipx
-  find /usr/share /usr/lib ~/.local/lib -depth -type d -name __pycache__ \
-    -exec rm -rf '{}' + 2>/dev/null;
 } &>/dev/null
 echo "::endgroup::"
 
