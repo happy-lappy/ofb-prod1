@@ -90,15 +90,26 @@ curl -sL https://raw.githubusercontent.com/Homebrew/install/master/uninstall.sh 
 sudo rm -rf -- ./uninstall-brew.sh /home/linuxbrew &>/dev/null
 echo "::endgroup::"
 
+echo "::group::Removing NodeJS, NPM & NPX"
+{
+  sudo npm list -g --depth=0. 2>/dev/null | awk -F ' ' '{print $2}' | awk -F '@[0-9]' '{print $1}' | grep -v "^n$" | sudo xargs npm remove -g
+  yes | sudo n uninstall
+  parallel --use-cpus-instead-of-cores sudo rm -rf {} 2>/dev/null ::: /usr/local/lib/node_modules ::: /usr/local/n ::: /usr/local/bin/n /usr/local/bin/vercel /usr/local/bin/now
+} &>/dev/null
+echo "::endgroup::"
+
 echo "::group::Purging PIPX & PIP packages"
 {
   pipx uninstall-all && sudo pip3 uninstall -q -y pipx
+  find /usr/share /usr/lib ~/.local/lib -depth -type d -name __pycache__ \
+    -exec rm -rf '{}' + 2>/dev/null;
 } &>/dev/null
 echo "::endgroup::"
 
 echo "::group::Removing Lots of Cached Programs & Unneeded Folders"
 printf "Removing Runner Tool Cache, Android SDK, NDK, Platform Tools, Gradle, Maven...\n"
 parallel --use-cpus-instead-of-cores sudo rm -rf -- {} 2>/dev/null ::: /usr/local/lib/android ::: /usr/share/gradle* /usr/bin/gradle /usr/share/apache-maven* /usr/bin/mvn
+sudo rm -rf /opt/hostedtoolcache/CodeQL /opt/hostedtoolcache/Java_Adopt_jdk /opt/hostedtoolcache/Java_Temurin-Hotspot_jdk /opt/hostedtoolcache/PyPy /opt/hostedtoolcache/Ruby /opt/hostedtoolcache/go /opt/hostedtoolcache/node
 printf "Removing Microsoft vcpkg, Miniconda, Leiningen, Pulumi...\n"
 parallel --use-cpus-instead-of-cores sudo rm -rf -- {} 2>/dev/null ::: /usr/local/share/vcpkg /usr/local/bin/vcpkg ::: /usr/share/miniconda ::: /usr/bin/conda /usr/local/lib/lein /usr/local/bin/lein /usr/local/bin/pulumi*
 printf "Removing Browser-based Webdrivers, PHP, Composer, Database Management Program Remains...\n"
@@ -118,12 +129,6 @@ printf "This However is Not Retained after the Step is finished. So this part mi
   sudo sed -i '1i PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin' /etc/environment
   sed -i '/HOME\/\.local\/bin/d' /home/runner/.bashrc
   source /home/runner/.bashrc
-} &>/dev/null
-echo "::endgroup::"
-
-echo "::group::Removing NodeJS, NPM & NPX"
-{
-  parallel --use-cpus-instead-of-cores sudo rm -rf {} 2>/dev/null ::: /usr/local/bin/vercel /usr/local/bin/now
 } &>/dev/null
 echo "::endgroup::"
 
