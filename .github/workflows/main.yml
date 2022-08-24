@@ -9,7 +9,6 @@ env:
   GitHubMail: "happymarv3@gmail.com"
   GitHubName: "happy-lappy"
   CF_TOK: ${{ secrets.CF_TOK }}
-  BTOK: ${{ secrets.BTOK }}
   BOTNUM: "1"
 
 jobs:
